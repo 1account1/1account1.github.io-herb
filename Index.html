@@ -69,7 +69,7 @@
                             exp = 0;
                             document.getElementById('lv').style.width = exp / 30 * 100 + "%";
                             document.getElementById('lv').innerHTML = "Lv." + levl;
-                            document.getElementById('herb').width = 30 + (levl * 0.2 * 30) + "%";
+                            document.getElementById('herbimg').width = 30 + (levl * 0.2 * 30) + "%";
                         }
                     }  
                 }
@@ -89,6 +89,6 @@
     <h4>폰에서 허브 키우기</h3>
     <div style="width: 0px;right: 19%;top: 46%;" id="water"></div>
     <img id="wc" onclick="wata();" src="can.png" width="21%" alt="">
-    <div id="herb"><img src="sprout.png" width="30%" alt=""></div>
+    <div id="herb"><img id="herbimg" src="sprout.png" width="30%" alt=""></div>
 </body>
 </html>
