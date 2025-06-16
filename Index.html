@@ -79,8 +79,11 @@
             }, 1)
         }
         document.addEventListener("DOMContentLoaded",function(){
-            watery = localStorage.getItem('herbexp');
-            waterx = localStorage.getItem('herblv');
+            exp = Number(localStorage.getItem('herbexp'));
+            lvel = Number(localStorage.getItem('herblv'));
+            document.getElementById('lv').style.width = exp / 30 * 100 + "%";
+            document.getElementById('lv').innerHTML = "Lv." + levl;
+            document.getElementById('herbimg').style.width = (30 + (levl * 0.2 * 30)) + "%";
             document.getElementById('water').style.top = watery + '%'
             document.getElementById('water').style.right = waterx + 'px'
             myLoop(); 
