@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PhoneHerb BETA</title>
+    <style>
+        body{
+            text-align: center;
+            margin: 0;
+            background-size: 70%;
+        }
+        h2{
+            color: rgb(156, 196, 106);
+        }
+        #lv{
+            color: white;
+            border: solid;
+            border-color: rgb(156, 196, 106);
+            background-color: rgb(156, 196, 106);
+            position: fixed;
+            top: 0;
+            left: 0;
+        }
+        #wc{position: fixed;
+            top: 20%;
+            right: 0;
+        }
+        #herb{
+            position: fixed;
+            padding: 0;
+            margin: 0;
+            left: 50%;
+            transform: translate(-50%,10%);
+            bottom: 0;
+        }
+        #water{
+            position: fixed;
+        }
+    </style>
+    <script>
+        let watery = 46;
+        let waterx = 19;
+        let watering = false;
+        let exp = 0;
+        let levl = 0;
+        function wata(){
+            watering = true;
+        }
+        function myLoop() {
+            setTimeout(function() {
+                if(watering){
+                    document.getElementById('water').innerHTML = '💧';
+                    watery = watery + 0.2;
+                    waterx = waterx + 0.11;
+                    document.getElementById('water').style.top = watery + '%';
+                    document.getElementById('water').style.right = waterx + '%';
+                    if(watery > 98){
+                        watering = false;
+                        watery = 46;
+                        waterx = 19;
+                        exp++;
+                        document.getElementById('lv').style.width = exp / 30 * 100 + "%";
+                        document.getElementById('water').style.top = watery + '%';
+                        document.getElementById('water').style.right = waterx + '%';
+                        document.getElementById('water').innerHTML = '';
+                        if(exp >= 30){
+                            levl++;
+                            exp = 0;
+                            document.getElementById('lv').style.width = exp / 30 * 100 + "%";
+                            document.getElementById('lv').innerHTML = "Lv." + levl;
+                            document.getElementById('herb').width = 21 + (levl * 0.2 * 21) + "%";
+                        }
+                    }  
+                }
+                myLoop();
+            }, 1)
+        }
+        document.addEventListener("DOMContentLoaded",function(){
+            document.getElementById('water').style.top = watery + '%'
+            document.getElementById('water').style.right = waterx + 'px'
+            myLoop(); 
+        })
+    </script>
+</head>
+<body>
+    <div style="width: 0;" id="lv">Lv.0</div>
+    <h2>Phone Herb</h2>
+    <h4>폰에서 허브 키우기</h3>
+    <div style="width: 0px;right: 19%;top: 46%;" id="water"></div>
+    <img id="wc" onclick="wata();" src="can.png" width="21%" alt="">
+    <div id="herb"><img src="sprout.png" width="30%" alt=""></div>
+</body>
+</html>
