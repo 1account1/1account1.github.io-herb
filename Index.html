@@ -80,7 +80,7 @@
         }
         document.addEventListener("DOMContentLoaded",function(){
             exp = Number(localStorage.getItem('herbexp'));
-            lvel = Number(localStorage.getItem('herblv'));
+            levl = Number(localStorage.getItem('herblv'));
             document.getElementById('lv').style.width = exp / 30 * 100 + "%";
             document.getElementById('lv').innerHTML = "Lv." + levl;
             document.getElementById('herbimg').style.width = (30 + (levl * 0.2 * 30)) + "%";
