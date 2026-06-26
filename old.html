@@ -34,9 +34,6 @@
             transform: translate(-50%,10%);
             bottom: 0;
         }
-        #water{
-            position: fixed;
-        }
     </style>
     <script>
         let watery = 46;
@@ -44,41 +41,10 @@
         let watering = false;
         let exp = 0;
         let levl = 0;
-        let waternum = 0;
-        function fall(num){
-            function loop(){
-                setTimeout(function() {
-                    console.log(parseFloat(document.getElementById('water' + num).style.top.replace(/[^0-9.]/g, "")));
-                    document.getElementById('water' + num).style.top = 0.2 + parseFloat(document.getElementById('water' + num).style.top.replace(/[^0-9.]/g, "")) + "%";
-                    document.getElementById('water' + num).style.right = 0.11 + parseFloat(document.getElementById('water' + num).style.right.replace(/[^0-9.]/g, "")) + "%";
-                    if(parseFloat(document.getElementById('water' + num).style.top.replace(/[^0-9.]/g, "")) < 98){
-                        loop();
-                    }else{
-                        document.getElementById('water' + num).remove();
-                        exp++;
-                        document.getElementById('lv').style.width = exp / 30 * 100 + "%";
-                        if(exp >= 30){
-                            levl++;
-                            exp = 0;
-                            document.getElementById('lv').style.width = exp / 30 * 100 + "%";
-                            document.getElementById('lv').innerHTML = "Lv." + levl;
-                            document.getElementById('herbimg').style.width = (30 + (levl * 0.2 * 30)) + "%";
-                        }
-                        localStorage.setItem('herbexp', exp);
-                        localStorage.setItem('herblv', levl);
-                    }
-                },1)
-            }
-            loop();
-        }
         function wata(){
-            document.getElementById('waters').innerHTML += '<div style="position: fixed;width: 0px;right: 19%;top: 46%;" id="water'+ waternum +'">💧</div>';
-            document.getElementById('water' + waternum).style.top = '46%';
-            document.getElementById('water' + waternum).style.right = '19%';
-            fall(waternum);
-            waternum++;
+            watering = true;
         }
-        /*function myLoop() {
+        function myLoop() {
             setTimeout(function() {
                 if(watering){
                     document.getElementById('water').innerHTML = '💧';
@@ -108,13 +74,16 @@
                 }
                 myLoop();
             }, 1)
-        }*/
+        }
         document.addEventListener("DOMContentLoaded",function(){
             exp = Number(localStorage.getItem('herbexp'));
             levl = Number(localStorage.getItem('herblv'));
             document.getElementById('lv').style.width = exp / 30 * 100 + "%";
             document.getElementById('lv').innerHTML = "Lv." + levl;
             document.getElementById('herbimg').style.width = (30 + (levl * 0.2 * 30)) + "%";
+            document.getElementById('water').style.top = watery + '%'
+            document.getElementById('water').style.right = waterx + 'px'
+            myLoop(); 
         })
     </script>
 </head>
@@ -122,7 +91,7 @@
     <div style="width: 0;" id="lv">Lv.0</div>
     <h2>Phone Herb</h2>
     <h4>폰에서 허브 키우기</h3>
-    <div id="waters"></div>
+    <div style="width: 0px;right: 19%;top: 46%;" id="water"></div>
     <img id="wc" onclick="wata();" src="can.png" width="21%" alt="">
     <div id="herb"><img id="herbimg" src="sprout.png" width="30%" alt=""></div>
 </body>
