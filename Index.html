@@ -26,6 +26,7 @@
         #wc{position: fixed;
             top: 20%;
             right: 0;
+            z-index: 100;
         }
         #herb{
             position: absolute;
@@ -34,6 +35,7 @@
             left: 50%;
             transform: translate(-50%,10%);
             bottom: 0;
+            z-index: 1;
         }
         #water{
             position: fixed;
@@ -202,16 +204,18 @@
     <div style="width: 0;" id="lv">Lv.0</div>
     <h2>Phone Herb</h2>
     <h4>폰에서 허브 키우기</h4>
-    <i class="fa-solid fa-shop" onclick="if(document.getElementById('shop').style.display == 'none'){document.getElementById('shop').style.display = 'block'}else{document.getElementById('shop').style.display = 'none'}"></i>
-    <i class="fa-solid fa-sun" id="sunshine" onmouseenter="document.getElementById('weather').style.display='block'" onmouseleave="document.getElementById('weather').style.display='none'"></i>
-    <span id="weather" style="border: solid;padding: 1% 0 1% 0;margin: 0 35% 0 35%;display: none;background-color: white;">
-        <span>오늘의 일조량은 <span id="sunvalue">0</span>W/m² 입니다</span>
-        <br><span>일조량이 높을떈 10초에 경험치가 1씩 증가합니다.</span>
-    </span>
-    <div id="shop" style="border: solid;margin: 0 25% 0 25%;display: none;background-color: white;">
+    <div style="position: fixed;z-index: 100;left: 50%;transform: translate(-50%,10%);">
+        <i class="fa-solid fa-shop" onclick="if(document.getElementById('shop').style.display == 'none'){document.getElementById('shop').style.display = 'block'}else{document.getElementById('shop').style.display = 'none'}"></i>
+        <i class="fa-solid fa-sun" id="sunshine" onmouseenter="document.getElementById('weather').style.display='block'" onmouseleave="document.getElementById('weather').style.display='none'"></i>
+    </div><br><br>
+    <span id="weather" style="position: fixed;left: 50%;transform: translate(-50%,10%);z-index: 100;border: solid;padding: 1% 0 1% 0;display: none;background-color: white;">
+        <span>현재 일조량은 <span id="sunvalue">0</span>W/m² 입니다</span>
+        <br><span>일조량이 높을 시 10초에 경험치가 1씩 증가합니다.</span>
+    </span><br>
+    <div id="shop" style="position: fixed;left: 50%;transform: translate(-50%,10%);z-index: 100;border: solid;width: 200px;;display: none;background-color: white;">
         <h4 style="margin-bottom: 6%;">상점</h4>
         <h4 style="display: none;margin-bottom: 6%;"><span style="margin: 1%;">SELL</span><span style="margin: 1%;">BUY</span></h4>
-        <span onclick="sell();" style="border: solid;padding: 1%;margin: 1%;">허브 팔기🌿 $<span id="amt">0</span></span><span id="wtrup" onclick="upgrade();" style="border: solid;padding: 1%;margin: 1%;">물 업그레이드💦</span>
+        <span onclick="sell();" style="border: solid;padding: 1%;margin: 1%;">허브 팔기🌿 $<span id="amt">0</span></span><br><br><span id="wtrup" onclick="upgrade();" style="border: solid;padding: 1%;margin: 1%;">물 업그레이드💦</span>
         <div style="margin-top: 10%;">돈 - $<span id="cash">0</span></div>
     </div>
     <div id="waters"></div>
