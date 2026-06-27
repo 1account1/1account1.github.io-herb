@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>PhoneHerb BETA</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <style>
         body{
             text-align: center;
@@ -27,7 +28,7 @@
             right: 0;
         }
         #herb{
-            position: fixed;
+            position: absolute;
             padding: 0;
             margin: 0;
             left: 50%;
@@ -45,6 +46,36 @@
         let exp = 0;
         let levl = 0;
         let waternum = 0;
+        let money = 0;
+        let multiple = 1;
+        let weath = 0;
+        function sell(){
+            money += levl*2;
+            exp = 0;
+            levl = 0;
+            document.getElementById('lv').style.width = exp / 30 * 100 + "%";
+            document.getElementById('lv').innerHTML = "Lv." + levl;
+            document.getElementById('herbimg').style.width = (30 + (levl * 0.2 * 30)) + "%";
+            document.getElementById('cash').innerText = money;
+            localStorage.setItem('herbexp', exp);
+            localStorage.setItem('herblv', levl);
+            localStorage.setItem('herbmn', money);
+        }
+        function upgrade(){
+            if (money >= 30 * multiple){
+                money -= 30 * multiple;
+                multiple++;
+                document.getElementById('wtrup').innerText = "물 업그레이드💦 $" + 30 * multiple;
+                document.getElementById('cash').innerText = money;
+                localStorage.setItem('herbmp', multiple);
+                localStorage.setItem('herbmn', money);
+            }else{
+                document.getElementById('wtrup').innerText = "돈이 부족합니다"
+                setTimeout(function() {
+                    document.getElementById('wtrup').innerText = "물 업그레이드💦 $" + 30 * multiple;
+                },1000)
+            }
+        }
         function fall(num){
             function loop(){
                 setTimeout(function() {
@@ -60,6 +91,7 @@
                         if(exp >= 30){
                             levl++;
                             exp = 0;
+                            document.getElementById('amt').innerText = levl*2;
                             document.getElementById('lv').style.width = exp / 30 * 100 + "%";
                             document.getElementById('lv').innerHTML = "Lv." + levl;
                             document.getElementById('herbimg').style.width = (30 + (levl * 0.2 * 30)) + "%";
@@ -72,11 +104,13 @@
             loop();
         }
         function wata(){
-            document.getElementById('waters').innerHTML += '<div style="position: fixed;width: 0px;right: 19%;top: 46%;" id="water'+ waternum +'">💧</div>';
-            document.getElementById('water' + waternum).style.top = '46%';
-            document.getElementById('water' + waternum).style.right = '19%';
-            fall(waternum);
-            waternum++;
+            for(i=0;i<multiple;i++){
+                document.getElementById('waters').innerHTML += '<div style="position: fixed;width: 0px;right: 19%;top: 46%;" id="water'+ waternum +'">💧</div>';
+                document.getElementById('water' + waternum).style.top = 47.5 - i*1.5 + '%';
+                document.getElementById('water' + waternum).style.right = 20.5 - i*1.5 + '%';
+                fall(waternum);
+                waternum++;
+            }
         }
         /*function myLoop() {
             setTimeout(function() {
@@ -112,16 +146,47 @@
         document.addEventListener("DOMContentLoaded",function(){
             exp = Number(localStorage.getItem('herbexp'));
             levl = Number(localStorage.getItem('herblv'));
+            money = Number(localStorage.getItem('herbmn'));
+            multiple = Number(localStorage.getItem('herbmp'));
+            if (multiple == false){
+                multiple = 1;
+            }
+            document.getElementById('wtrup').innerText = "물 업그레이드💦 $" + 30 * multiple;
             document.getElementById('lv').style.width = exp / 30 * 100 + "%";
             document.getElementById('lv').innerHTML = "Lv." + levl;
             document.getElementById('herbimg').style.width = (30 + (levl * 0.2 * 30)) + "%";
+            document.getElementById('cash').innerText = money;
+            document.getElementById('amt').innerText = levl*2;
+            async function getSunlight() {
+                const url = "https://api.open-meteo.com/v1/forecast?latitude=37.5665&longitude=126.9780&current=shortwave_radiation";
+                
+                const response = await fetch(url);
+                const data = await response.json();
+                
+                // 현재 일조량 (단위: W/m²)
+                console.log(data.current.shortwave_radiation);
+                document.getElementById('sunvalue').innerText = data.current.shortwave_radiation;
+                weath = data.current.shortwave_radiation;
+            }
+            getSunlight();
         })
     </script>
 </head>
 <body>
     <div style="width: 0;" id="lv">Lv.0</div>
     <h2>Phone Herb</h2>
-    <h4>폰에서 허브 키우기</h3>
+    <h4>폰에서 허브 키우기</h4>
+    <i class="fa-solid fa-shop" onclick="if(document.getElementById('shop').style.display == 'none'){document.getElementById('shop').style.display = 'block'}else{document.getElementById('shop').style.display = 'none'}"></i>
+    <i class="fa-solid fa-sun" onmouseenter="document.getElementById('weather').style.display='block'" onmouseleave="document.getElementById('weather').style.display='none'"></i>
+    <span id="weather" style="border: solid;padding: 1% 0 1% 0;margin: 0 35% 0 35%;display: none;background-color: white;">
+        <span>오늘의 일조량은 <span id="sunvalue">0</span>W/m² 입니다</span>
+    </span>
+    <div id="shop" style="border: solid;margin: 0 25% 0 25%;display: none;background-color: white;">
+        <h4 style="margin-bottom: 6%;">상점</h4>
+        <h4 style="display: none;margin-bottom: 6%;"><span style="margin: 1%;">SELL</span><span style="margin: 1%;">BUY</span></h4>
+        <span onclick="sell();" style="border: solid;padding: 1%;margin: 1%;">허브 팔기🌿 $<span id="amt">0</span></span><span id="wtrup" onclick="upgrade();" style="border: solid;padding: 1%;margin: 1%;">물 업그레이드💦</span>
+        <div style="margin-top: 10%;">돈 - $<span id="cash">0</span></div>
+    </div>
     <div id="waters"></div>
     <img id="wc" onclick="wata();" src="can.png" width="21%" alt="">
     <div id="herb"><img id="herbimg" src="sprout.png" width="30%" alt=""></div>
