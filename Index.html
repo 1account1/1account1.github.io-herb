@@ -103,6 +103,23 @@
             }
             loop();
         }
+        function shinin(){
+                setTimeout(function() {
+                    exp++;
+                    document.getElementById('lv').style.width = exp / 30 * 100 + "%";
+                    if(exp >= 30){
+                        levl++;
+                        exp = 0;
+                        document.getElementById('amt').innerText = levl*2;
+                        document.getElementById('lv').style.width = exp / 30 * 100 + "%";
+                        document.getElementById('lv').innerHTML = "Lv." + levl;
+                        document.getElementById('herbimg').style.width = (30 + (levl * 0.2 * 30)) + "%";
+                    }
+                    localStorage.setItem('herbexp', exp);
+                    localStorage.setItem('herblv', levl);
+                    shinin();
+                },10000)
+        }
         function wata(){
             for(i=0;i<multiple;i++){
                 document.getElementById('waters').innerHTML += '<div style="position: fixed;width: 0px;right: 19%;top: 46%;" id="water'+ waternum +'">💧</div>';
@@ -167,6 +184,15 @@
                 console.log(data.current.shortwave_radiation);
                 document.getElementById('sunvalue').innerText = data.current.shortwave_radiation;
                 weath = data.current.shortwave_radiation;
+                if (weath > 600){
+                    shinin();
+                }else{
+                    if(weath > 200){
+                        document.getElementById('sunshine').className = 'fa-regular fa-sun';
+                    }else{
+                        document.getElementById('sunshine').className = 'fa-solid fa-cloud';
+                    }
+                }
             }
             getSunlight();
         })
@@ -177,9 +203,10 @@
     <h2>Phone Herb</h2>
     <h4>폰에서 허브 키우기</h4>
     <i class="fa-solid fa-shop" onclick="if(document.getElementById('shop').style.display == 'none'){document.getElementById('shop').style.display = 'block'}else{document.getElementById('shop').style.display = 'none'}"></i>
-    <i class="fa-solid fa-sun" onmouseenter="document.getElementById('weather').style.display='block'" onmouseleave="document.getElementById('weather').style.display='none'"></i>
+    <i class="fa-solid fa-sun" id="sunshine" onmouseenter="document.getElementById('weather').style.display='block'" onmouseleave="document.getElementById('weather').style.display='none'"></i>
     <span id="weather" style="border: solid;padding: 1% 0 1% 0;margin: 0 35% 0 35%;display: none;background-color: white;">
         <span>오늘의 일조량은 <span id="sunvalue">0</span>W/m² 입니다</span>
+        <br><span>일조량이 높을떈 10초에 경험치가 1씩 증가합니다.</span>
     </span>
     <div id="shop" style="border: solid;margin: 0 25% 0 25%;display: none;background-color: white;">
         <h4 style="margin-bottom: 6%;">상점</h4>
