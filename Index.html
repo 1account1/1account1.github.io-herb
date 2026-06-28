@@ -40,6 +40,18 @@
         #water{
             position: fixed;
         }
+        img {
+            /* iOS, Safari에서 꾹 눌렀을 때 나오는 저장/복사 메뉴 팝업 방지 */
+            -webkit-touch-callout: none;
+            
+            /* 마우스 드래그나 텍스트 선택 방지 */
+            -webkit-user-select: none; /* Safari */
+            -ms-user-select: none;     /* IE 10+ */
+            user-select: none;         /* 표준 */
+            
+            /* 이미지 드래그 자체를 방지 (PC 브라우저용) */
+            -webkit-user-drag: none;
+        }
     </style>
     <script>
         let watery = 46;
@@ -51,6 +63,38 @@
         let money = 0;
         let multiple = 1;
         let weath = 0;
+        let holding = false;
+        let mouseX = 0;
+        let mouseY = 0;
+        function down(){
+            setTimeout(function() {
+                if (parseFloat(document.getElementById('hosehand').style.top.replace(/[^0-9.]/g, ""))<90 && holding == false){
+                    document.getElementById('hosehand').style.top = 0.2 + parseFloat(document.getElementById('hosehand').style.top.replace(/[^0-9.]/g, "")) + "%";
+                }
+                /*if (parseFloat(document.getElementById('hosehand').style.top.replace(/[^0-9.]/g, ""))<90){
+                    down();
+                }*/
+                //document.getElementById('hosetail').style.width = (((98 - mouseY)**2 + mouseX**2)**1/2)/10 + "%";
+                down();
+                document.getElementById('hosetail').style.width = ((((98 -mouseY)/window.innerHeight*window.innerWidth)**2 +  mouseX**2)**1/2)+ "%";
+                //document.getElementById('hosetail').style.width = mouseX + "%";
+                //console.log(((98 - mouseY)**2 + mouseX**2)**1/2 + "%");
+                //console.log((98 -mouseY)*window.innerHeight/window.innerWidth + "," + (mouseX) + "," + ((/*((98 -mouseY)/window.innerHeight*window.innerWidth)*/3**2 +  4**2)));
+
+            }, 1)
+        }
+        down();
+        window.addEventListener('mousemove', (e) => {
+            mouseX = (e.clientX / window.innerWidth) * 100;
+            mouseY = (e.clientY / window.innerHeight) * 100;
+            if (holding){
+                document.getElementById('hosehand').style.top = mouseY -2 +"%";
+                document.getElementById('hosehand').style.left = mouseX -2 +"%";
+            }
+        });
+        window.addEventListener('mouseup', (e) => {
+            holding = false;
+        })
         function sell(){
             money += levl*2;
             exp = 0;
@@ -77,6 +121,33 @@
                     document.getElementById('wtrup').innerText = "물 업그레이드💦 $" + 30 * multiple;
                 },1000)
             }
+        }
+        function fallten(num){
+            function loop(){
+                setTimeout(function() {
+                    //console.log(parseFloat(document.getElementById('water' + num).style.top.replace(/[^0-9.]/g, "")));
+                    document.getElementById('water' + num).style.top = 0.2 + parseFloat(document.getElementById('water' + num).style.top.replace(/[^0-9.]/g, "")) + "%";
+                    document.getElementById('water' + num).style.right = 0.11 + parseFloat(document.getElementById('water' + num).style.right.replace(/[^0-9.]/g, "")) + "%";
+                    if(parseFloat(document.getElementById('water' + num).style.top.replace(/[^0-9.]/g, "")) < 98){
+                        loop();
+                    }else{
+                        document.getElementById('water' + num).remove();
+                        exp += 10;
+                        document.getElementById('lv').style.width = exp / 30 * 100 + "%";
+                        if(exp >= 30){
+                            levl++;
+                            exp = 0;
+                            document.getElementById('amt').innerText = levl*2;
+                            document.getElementById('lv').style.width = exp / 30 * 100 + "%";
+                            document.getElementById('lv').innerHTML = "Lv." + levl;
+                            document.getElementById('herbimg').style.width = (30 + (levl * 0.2 * 30)) + "%";
+                        }
+                        localStorage.setItem('herbexp', exp);
+                        localStorage.setItem('herblv', levl);
+                    }
+                },1)
+            }
+            loop();
         }
         function falltw(num){
             function loop(){
@@ -157,13 +228,25 @@
                 falltw(waternum);
                 waternum++;
             }
-            for(i=0;i<multiple%20;i++){
+            for(i=0;i<Math.floor((multiple%20)/10);i++){
+                document.getElementById('waters').innerHTML += '<div style="font-size:x-large;position: fixed;width: 0px;right: 19%;top: 46%;" id="water'+ waternum +'">💧</div>';
+                document.getElementById('water' + waternum).style.top = 47.5 - i*1.5 + '%';
+                document.getElementById('water' + waternum).style.right = 20.5 - i*1.5 + '%';
+                fallten(waternum);
+                waternum++;
+                console.log("a"+Math.floor((multiple%20)/10))
+            }
+            for(i=0;i<multiple%10;i++){
                 document.getElementById('waters').innerHTML += '<div style="position: fixed;width: 0px;right: 19%;top: 46%;" id="water'+ waternum +'">💧</div>';
                 document.getElementById('water' + waternum).style.top = 47.5 - i*1.5 + '%';
                 document.getElementById('water' + waternum).style.right = 20.5 - i*1.5 + '%';
                 fall(waternum);
                 waternum++;
+                console.log("b"+multiple%10)
             }
+        }
+        function hold(){
+            holding = true;
         }
         /*function myLoop() {
             setTimeout(function() {
@@ -252,6 +335,8 @@
         <span onclick="sell();" style="border: solid;padding: 1%;margin: 1%;">허브 팔기🌿 $<span id="amt">0</span></span><br><br><span id="wtrup" onclick="upgrade();" style="border: solid;padding: 1%;margin: 1%;">물 업그레이드💦</span>
         <div style="margin-top: 10%;">돈 - $<span id="cash">0</span></div>
     </div>
+    <img src="hosehand.png" id="hosehand" style="display: none;z-index: 100;position: fixed;top: 0;left: 0;" onmousedown="hold();" width="100px" alt="">
+    <img id="hosetail" width="10%" style="position: fixed;top:98%;left:0;display: none;" src="tailofhose.png" height="3.5px" alt="">
     <div id="waters"></div>
     <img id="wc" onclick="wata();" src="can.png" width="21%" alt="">
     <div id="herb"><img id="herbimg" src="sprout.png" width="30%" alt=""></div>
