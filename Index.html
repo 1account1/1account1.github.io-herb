@@ -78,10 +78,37 @@
                 },1000)
             }
         }
+        function falltw(num){
+            function loop(){
+                setTimeout(function() {
+                    //console.log(parseFloat(document.getElementById('water' + num).style.top.replace(/[^0-9.]/g, "")));
+                    document.getElementById('water' + num).style.top = 0.2 + parseFloat(document.getElementById('water' + num).style.top.replace(/[^0-9.]/g, "")) + "%";
+                    document.getElementById('water' + num).style.right = 0.11 + parseFloat(document.getElementById('water' + num).style.right.replace(/[^0-9.]/g, "")) + "%";
+                    if(parseFloat(document.getElementById('water' + num).style.top.replace(/[^0-9.]/g, "")) < 98){
+                        loop();
+                    }else{
+                        document.getElementById('water' + num).remove();
+                        exp += 20;
+                        document.getElementById('lv').style.width = exp / 30 * 100 + "%";
+                        if(exp >= 30){
+                            levl++;
+                            exp = 0;
+                            document.getElementById('amt').innerText = levl*2;
+                            document.getElementById('lv').style.width = exp / 30 * 100 + "%";
+                            document.getElementById('lv').innerHTML = "Lv." + levl;
+                            document.getElementById('herbimg').style.width = (30 + (levl * 0.2 * 30)) + "%";
+                        }
+                        localStorage.setItem('herbexp', exp);
+                        localStorage.setItem('herblv', levl);
+                    }
+                },1)
+            }
+            loop();
+        }
         function fall(num){
             function loop(){
                 setTimeout(function() {
-                    console.log(parseFloat(document.getElementById('water' + num).style.top.replace(/[^0-9.]/g, "")));
+                    //console.log(parseFloat(document.getElementById('water' + num).style.top.replace(/[^0-9.]/g, "")));
                     document.getElementById('water' + num).style.top = 0.2 + parseFloat(document.getElementById('water' + num).style.top.replace(/[^0-9.]/g, "")) + "%";
                     document.getElementById('water' + num).style.right = 0.11 + parseFloat(document.getElementById('water' + num).style.right.replace(/[^0-9.]/g, "")) + "%";
                     if(parseFloat(document.getElementById('water' + num).style.top.replace(/[^0-9.]/g, "")) < 98){
@@ -123,7 +150,14 @@
                 },10000)
         }
         function wata(){
-            for(i=0;i<multiple;i++){
+            for(i=0;i<Math.floor(multiple/20);i++){
+                document.getElementById('waters').innerHTML += '<div style="font-size:xx-large;position: fixed;width: 0px;right: 19%;top: 46%;" id="water'+ waternum +'">💧</div>';
+                document.getElementById('water' + waternum).style.top = 47.5 - i*1.5 + '%';
+                document.getElementById('water' + waternum).style.right = 20.5 - i*1.5 + '%';
+                falltw(waternum);
+                waternum++;
+            }
+            for(i=0;i<multiple%20;i++){
                 document.getElementById('waters').innerHTML += '<div style="position: fixed;width: 0px;right: 19%;top: 46%;" id="water'+ waternum +'">💧</div>';
                 document.getElementById('water' + waternum).style.top = 47.5 - i*1.5 + '%';
                 document.getElementById('water' + waternum).style.right = 20.5 - i*1.5 + '%';
